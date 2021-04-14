@@ -1,0 +1,460 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('./fonts/Montserrat-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('./fonts/Montserrat-SemiBold.ttf') format('truetype');
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('./fonts/Montserrat-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+  padding: 0;
+  margin: 0;
+  color: white;
+}
+
+.body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-style: normal;
+}
+
+.weather {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 90px;
+  position: relative;
+  top: 0;
+  background: linear-gradient( 180deg, rgba(8, 15, 26, 0.5) 0%, rgba(6, 6, 8, 0.5) 100%), url(./img/weather.jpg);
+  background-size: cover;
+  /* -webkit-animation: fade-in 1s linear;
+  -moz-animation: fade-in 1s linear;
+  -o-animation: fade-in 1s linear;
+  animation: fade-in 1s linear; */
+  max-width: 100%;
+  animation: fade 1s linear;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0
+  }
+  100% {
+    opacity: 1
+  }
+}
+
+.weather_inner {
+  display: flex;
+  justify-content: space-between;
+}
+
+.weather_left {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.weather_panel {
+  display: flex;
+  width: 310px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  border-radius: 5px;
+}
+
+.lang {
+  margin: 0 10px;
+  border-radius: 5px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(174, 181, 185, 0.5);
+  width: 44px;
+  height: 44px;
+  border-radius: 5px;
+}
+
+.button:hover, .button:active, .button:focus {
+  opacity: 0.5;
+}
+
+.button_active {
+  background: rgba(76, 82, 85, 0.8);
+  border-radius: 5px;
+  color: rgb(255, 255, 255, 0.9);
+}
+
+.select_lang {
+  background: rgba(174, 181, 185, 0.5);
+  width: 70px;
+  height: 44px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  border-radius: 5px;
+}
+
+.current {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.current_city {
+  /* font-family: Montserrat; */
+  font-style: normal;
+  font-weight: bold;
+  font-size: 44px;
+  line-height: 54px;
+  text-transform: uppercase;
+}
+
+.current_date_and_time {
+  display: flex;
+  flex-direction: row;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.current_time {
+  margin-left: 18px;
+}
+
+.forecast, .temperature, .lang {
+  display: flex;
+}
+
+.temperature_number {
+  font-weight: bold;
+  font-size: 206px;
+  line-height: 333px;
+  text-transform: uppercase;
+}
+
+.temperature_symbol {
+  padding-top: 15%;
+  font-weight: bold;
+  font-size: 100px;
+}
+
+.details_weather_img img {
+  width: 150px;
+}
+
+.details_text {
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 33px;
+  text-transform: uppercase;
+}
+
+.forecast_next_days, .row {
+  display: flex;
+}
+
+.forecast_next_day {
+  display: flex;
+  flex-direction: column;
+  margin-right: 50px;
+}
+
+.weekday {
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 27px;
+  text-transform: uppercase;
+  margin: 0 auto;
+}
+
+.weekday_forecast, .weekday_temperature {
+  display: flex;
+  font-weight: 500;
+  font-size: 70px;
+  line-height: 88px;
+  text-transform: uppercase;
+}
+
+.weekday_weather_img img {
+  display: flex;
+  width: 65px;
+}
+
+/**************************Weather_right"********************************/
+
+.weather_right {
+  position: relative;
+  top: 0;
+  right: 0;
+}
+
+.input_search {
+  width: 224px;
+  height: 44px;
+  background: rgba(76, 82, 85, 0.4);
+  border: 1px solid rgba(228, 227, 227, 0.2);
+  box-sizing: border-box;
+  padding: 0 15px;
+  color: rgb(255, 255, 255);
+}
+
+.input_search:focus, .input_search:active, .input_search:hover {
+  background: rgba(76, 82, 85, 0.9);
+}
+
+.input_submit {
+  width: 84px;
+  height: 44px;
+  background: rgba(174, 181, 185, 0.5);
+  border-radius: 5px;
+  border: unset;
+  text-transform: uppercase;
+}
+
+.input_submit:focus, .input_submit:active, .input_submit:hover {
+  background: rgba(174, 181, 185, 0.8);
+}
+
+.container_map {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-top: 135px;
+}
+
+.map {
+  width: 320px;
+  height: 340px;
+  border-radius: 20px 20px 0 20px;
+}
+
+.coordinates {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 30px 0;
+}
+
+.row {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+  text-transform: capitalize;
+}
+
+@media screen and (min-width: 1020px) and (max-width: 1200px) {
+  .weather {
+    padding: 20px 45px;
+  }
+  .current_city {
+    font-size: 34px;
+    line-height: 44px;
+  }
+  .temperature_number {
+    font-size: 156px;
+    line-height: 283px;
+  }
+  .details_text h1 {
+    font-size: 18px;
+    line-height: 28px;
+  }
+  .forecast_next_days {
+    margin-top: 60px;
+  }
+  .forecast_next_day {
+    margin-right: 25px;
+  }
+  .weekday {
+    font-size: 18px;
+    line-height: 23px;
+  }
+  .weekday_temperature {
+    font-size: 50px;
+    line-height: 68px;
+  }
+  /***on the Right**/
+  .input_search {
+    width: 214px;
+  }
+  .input_submit {
+    width: 81px;
+  }
+  .container_map {
+    margin-top: 100px;
+  }
+}
+
+@media screen and (min-width: 760px) and (max-width: 1020px) {
+  .weather {
+    padding: 20px 40px;
+  }
+  .current_city {
+    font-size: 24px;
+    line-height: 34px;
+  }
+  .current_date_and_time {
+    font-size: 18px;
+    height: 25px;
+  }
+  .forecast {
+    margin-top: 30px;
+  }
+  .temperature_number {
+    font-size: 106px;
+    line-height: 233px;
+  }
+  .details_weather_img img {
+    width: 100px;
+  }
+  .details_text h1 {
+    font-size: 14px;
+    line-height: 24px;
+  }
+  .forecast_next_days {
+    margin-top: 30px;
+  }
+  .forecast_next_day {
+    margin-right: 20px;
+  }
+  .weekday {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .weekday_temperature {
+    font-size: 40px;
+    line-height: 58px;
+  }
+  .weekday_weather_img img {
+    width: 35px;
+  }
+  /***on the Right**/
+  .input_search {
+    width: 200px;
+  }
+  .input_submit {
+    width: 71px;
+  }
+  .map {
+    width: 220px;
+    height: 240px;
+  }
+  .row {
+    font-size: 14px;
+    line-height: 26px;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .weather_inner {
+    flex-direction: column;
+  }
+  .weather {
+    padding: 15px 0;
+  }
+  .weather_left {
+    margin: 0 auto;
+  }
+  .weather_panel {
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .current {
+    margin-top: 20px;
+    text-align: center;
+  }
+  .current_city {
+    font-size: 24px;
+    line-height: 34px;
+  }
+  .current_date_and_time {
+    font-size: 18px;
+    height: 25px;
+    justify-content: center;
+  }
+  .forecast {
+    margin-top: 20px;
+    justify-content: center;
+  }
+  .temperature_number {
+    font-size: 76px;
+    line-height: 183px;
+  }
+  .temperature_symbol {
+    padding-top: 30%;
+    font-size: 60px;
+  }
+  .details_weather_img img {
+    width: 80px;
+  }
+  .details_text h1 {
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .forecast_next_days {
+    max-width: 260px;
+    margin: 20px auto;
+  }
+  .forecast_next_day {
+    margin: 0 7px;
+  }
+  .weekday {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .weekday_temperature {
+    font-size: 30px;
+    line-height: 48px;
+  }
+  .weekday_weather_img img {
+    width: 25px;
+  }
+  /***on the Right**/
+  .search {
+    text-align: center;
+  }
+  .input_search {
+    width: 180px;
+  }
+  .input_submit {
+    width: 61px;
+  }
+  .container_map {
+    margin-top: 20px;
+    justify-content: center;
+  }
+  .map {
+    width: 220px;
+    height: 240px;
+  }
+  .coordinates {
+    align-items: center;
+  }
+  .row {
+    font-size: 14px;
+    line-height: 26px;
+    text-align: center;
+  }
+}

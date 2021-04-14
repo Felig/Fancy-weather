@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fancy-weather</title>
+  <link rel="stylesheet" href="./style.css">
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
+  <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+    type="text/css" />
+</head>
+
+<body class="body">
+  <div class="weather">
+    <div class="weather_inner">
+      <div class="weather_left">
+        <div class="weather_panel">
+          <div class="button refresh">
+            <img src="./img/icons/refresh.png" alt="refresh">
+          </div>
+          <div class="lang">
+            <div class="button button_active en">en</div>
+            <div class="button ru">ru</div>
+          </div>
+          <div class="button fahrenheit">&#176F</div>
+          <div class="button button_active celsius">&#176c</div>
+        </div>
+        <div class="current">
+          <div class="current_city">Minsk, Belarus</div>
+          <div class="current_date_and_time">
+            <div class="current_date" id="current_date">Mon 28 October</div>
+            <div class="current_time" id="current_time">20:12</div>
+          </div>
+        </div>
+        <div class="forecast">
+          <div class="temperature">
+            <div class="temperature_number"></div>
+            <div class="temperature_symbol">&#176</div>
+          </div>
+          <div class="details">
+            <div class="details_weather">
+              <div class="details_weather_img"></div>
+            </div>
+            <div class="details_text">
+              <p class="details_clouds">overcast</p>
+              <div class="row">
+                <p class="feels_like">feels like: 7°</p>&nbsp; <p class="details_feels"></p>
+              </div>
+              <div class="row">
+                <p class="wind">Wind: 2 m/s</p>&nbsp; <p class="details_wind"></p>
+              </div>
+              <div class="row">
+                <p class="humidity">humidity: 83%</p>&nbsp; <p class="details_humidity"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="forecast_next_days">
+          <div class="forecast_next_day">
+            <div class="weekday day_1">tuesday</div>
+            <div class="weekday_forecast">
+              <div class="weekday_temperature">
+                <div class="weekday_temperature_number temp_1"></div>
+                <div class="weekday_temperature_symbol">&#176</div>
+              </div>
+              <div class="weekday_details">
+                <div class="weekday_weather_img icon_1"></div>
+              </div>
+            </div>
+          </div>
+          <div class="forecast_next_day">
+            <div class="weekday day_2">wednesday</div>
+            <div class="weekday_forecast">
+              <div class="weekday_temperature">
+                <div class="weekday_temperature_number temp_2"></div>
+                <div class="weekday_temperature_symbol">&#176</div>
+              </div>
+              <div class="weekday_details">
+                <div class="weekday_weather_img icon_2"></div>
+              </div>
+            </div>
+          </div>
+          <div class="forecast_next_day">
+            <div class="weekday day_3">thursday</div>
+            <div class="weekday_forecast">
+              <div class="weekday_temperature">
+                <div class="weekday_temperature_number temp_3"></div>
+                <div class="weekday_temperature_symbol">&#176</div>
+              </div>
+              <div class="weekday_details">
+                <div class="weekday_weather_img icon_3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="weather_right">
+        <div class="search">
+          <input type="search" name="q" placeholder="Search city" class="input_search">
+          <input type="submit" value="Search" class="input_submit">
+        </div>
+        <div class="container_map">
+          <div class="map" id="map"></div>
+        </div>
+        <div class="coordinates">
+          <div class="row">
+            <p class="coordinates_lat">latitude: 53°54'</p>&nbsp; <p class="map_lat"></p>
+          </div>
+          <div class="row">
+            <p class="coordinates_lng">longitude: 27°34'</p>&nbsp; <p class="map_lng"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./main.js"></script>
+  <script defer src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
+  <script defer
+    src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+</body>
+
+</html>
