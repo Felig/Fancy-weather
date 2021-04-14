@@ -232,7 +232,7 @@ function changeLanguageOfMap() {
 
     setTimeout(() => {
       resolve();
-    }, 3000);
+    }, 7000);
   });
 }
 
