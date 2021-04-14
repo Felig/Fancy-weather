@@ -115,7 +115,7 @@ function initNewUserData() {
 function getWeather(locationCity, lang) {
   const keyWeather = "faa22b98c4d6f4b1fd451599a62d942f";
   fetch(
-    `http://api.openweathermap.org/data/2.5/forecast?q=${locationCity}&units=metric&lang=${lang}&appid=${keyWeather}`
+    `https://api.openweathermap.org/data/2.5/forecast?q=${locationCity}&units=metric&lang=${lang}&appid=${keyWeather}`
   )
     .then((response) => {
       return response.json();
