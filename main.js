@@ -30,6 +30,7 @@ let now = new Date(),
 
   mapObject;
 localStorage.setItem('lang', 'en');
+localStorage.setItem('radioDegree', "metric");
 
 function renderBackground() {
   fetch(
