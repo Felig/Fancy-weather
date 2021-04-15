@@ -27,10 +27,9 @@ const positionLat = document.querySelector(".map_lat");
 const positionLng = document.querySelector(".map_lng");
 const backgroundContainer = document.querySelector(".weather");
 let now = new Date(),
-  mapLatitude,
-  mapLongitude,
-  map1;
-localStorage.setItem('lang', 'ru');
+
+  mapObject;
+localStorage.setItem('lang', 'en');
 
 function renderBackground() {
   fetch(
@@ -46,7 +45,7 @@ function renderBackground() {
       backgroundContainer.style.backgroundImage = `linear-gradient(
                 180deg,
                 rgba(8, 15, 26, 0.5) 0%,
-                rgba(6, 6, 8, 0.5) 100%
+                rgba(6, 6, 8, 0.5)
               ), url(${data.urls.regular})`;
     });
 }
@@ -114,36 +113,27 @@ function initNewUserData() {
 
 function getWeather(locationCity, lang) {
   const keyWeather = "faa22b98c4d6f4b1fd451599a62d942f";
+  let degree = localStorage.getItem("radioDegree");
   fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?q=${locationCity}&units=metric&lang=${lang}&appid=${keyWeather}`
+    `https://api.openweathermap.org/data/2.5/forecast?q=${locationCity}&units=${degree}&lang=${lang}&appid=${keyWeather}`
   )
     .then((response) => {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       mapLatitude = data.city.coord.lat.toFixed(2);
       mapLongitude = data.city.coord.lon.toFixed(2);
       positionLat.innerHTML = `${mapLatitude}`;
       positionLng.innerHTML = `${mapLongitude}`;
-      localStorage.setItem('radioDegree', "celsius");
       let degree = localStorage.getItem("radioDegree");
-      if (degree) {
-        if (degree === "fahrenheit") {
-          currentTemp.innerHTML = `${Math.round((data.list[0].main.temp * 9) / 5 + 32)}`;
-          currentWeatherFeels.innerHTML = ` ${Math.round((data.list[0].main.feels_like * 9) / 5 + 32)}&deg`;
-          forecastTemp1.innerHTML = `${Math.round((data.list[8].main.temp * 9) / 5 + 32)}&deg`;
-          forecastTemp2.innerHTML = `${Math.round((data.list[16].main.temp * 9) / 5 + 32)}&deg`;
-          forecastTemp3.innerHTML = `${Math.round((data.list[24].main.temp * 9) / 5 + 32)}&deg`;
-        } else {
-          currentTemp.innerHTML = `${Math.round(data.list[0].main.temp)}`;
-          currentWeatherFeels.innerHTML = ` ${Math.round(data.list[0].main.feels_like)}&deg`;
-          forecastTemp1.innerHTML = `${Math.round(data.list[8].main.temp)}`;
-          forecastTemp2.innerHTML = `${Math.round(data.list[16].main.temp)}`;
-          forecastTemp3.innerHTML = `${Math.round(data.list[24].main.temp)}`;
 
-        }
-      }
+      currentTemp.innerHTML = `${Math.round(data.list[0].main.temp)}`;
+      currentWeatherFeels.innerHTML = ` ${Math.round(data.list[0].main.feels_like)}&deg`;
+      forecastTemp1.innerHTML = `${Math.round(data.list[8].main.temp)}`;
+      forecastTemp2.innerHTML = `${Math.round(data.list[16].main.temp)}`;
+      forecastTemp3.innerHTML = `${Math.round(data.list[24].main.temp)}`;
+
 
       currentTempIcon.innerHTML =
         `<img src="./img/icons/${data.list[0].weather[0].icon}.svg">`;
@@ -174,37 +164,6 @@ function getWeather(locationCity, lang) {
       weatherForecast3.textContent = week[day];
       if (day > week.length - 1) day = 0;
       day++;
-
-      fahrenheitMode.addEventListener("click", () => {
-        fahrenheitMode.classList.add("button_active");
-        celsiusMode.classList.remove("button_active");
-
-        currentTemp.innerHTML = `${Math.round(
-          (data.list[0].main.temp * 9) / 5 + 32)}`;
-        currentWeatherFeels.innerHTML = `${Math.round((data.list[0].main.feels_like * 9) / 5 + 32)}&deg`;
-        forecastTemp1.innerHTML = `${Math.round((data.list[8].main.temp * 9) / 5 + 32)}`;
-        forecastTemp2.innerHTML = `${Math.round((data.list[16].main.temp * 9) / 5 + 32)}`;
-        forecastTemp3.innerHTML = `${Math.round((data.list[24].main.temp * 9) / 5 + 32)}`;
-      });
-      celsiusMode.addEventListener("click", () => {
-        celsiusMode.classList.add("button_active");
-        fahrenheitMode.classList.remove("button_active");
-
-        currentTemp.innerHTML = `${Math.round(data.list[0].main.temp)}`;
-        currentWeatherFeels.innerHTML = `${Math.round(data.list[0].main.feels_like)}&deg`;
-        forecastTemp1.innerHTML = `${Math.round(data.list[8].main.temp)}`;
-        forecastTemp2.innerHTML = `${Math.round(data.list[16].main.temp)}`;
-        forecastTemp3.innerHTML = `${Math.round(data.list[24].main.temp)}`;
-      });
-    })
-    .then((data) => {
-      mapboxgl.accessToken = 'pk.eyJ1IjoiZmVsaWcxIiwiYSI6ImNrbmV3eXo3dzI5cHIydW1xdGJjMjN3NmsifQ.jmp6mdD3Lzub-xYT5nWW7Q';
-      map1 = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/mapbox/streets-v11",
-        center: [mapLongitude, mapLatitude], // starting position [lng, lat]
-        zoom: 9,
-      });
     })
 
     .catch((err) => {
@@ -213,27 +172,60 @@ function getWeather(locationCity, lang) {
     });
 }
 
+fahrenheitMode.addEventListener("click", () => {
+  fahrenheitMode.classList.add("button_active");
+  celsiusMode.classList.remove("button_active");
+  localStorage.setItem('radioDegree', "imperial");
+  initWeather();
+});
+celsiusMode.addEventListener("click", () => {
+  celsiusMode.classList.add("button_active");
+  fahrenheitMode.classList.remove("button_active");
+  localStorage.setItem('radioDegree', "metric");
+  initWeather();
+});
 
-
-function changeLanguageOfMap() {
-  return new Promise((resolve) => {
-    map1.getStyle().layers.map((each) => {
-      if (
-        each.hasOwnProperty('layout') &&
-        each.layout.hasOwnProperty('text-field')
-      ) {
-        if (!each.id.includes('road'))
-          map1.setLayoutProperty(each.id, 'text-field', [
-            'get',
-            `name_${localStorage.getItem('lang')}`,
-          ]);
-      }
+function getMap(locationCity, lang) {
+  const keyWeather = "faa22b98c4d6f4b1fd451599a62d942f";
+  fetch(
+    `https://api.openweathermap.org/data/2.5/forecast?q=${locationCity}&units=metric&lang=${lang}&appid=${keyWeather}`
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZmVsaWcxIiwiYSI6ImNrbmV3eXo3dzI5cHIydW1xdGJjMjN3NmsifQ.jmp6mdD3Lzub-xYT5nWW7Q';
+      mapObject = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/streets-v11",
+        center: [mapLongitude, mapLatitude], // starting position [lng, lat]
+        zoom: 9,
+      });
+    })
+    .catch((err) => {
+      alert("Something went wrong - getMap");
+      console.log("err getMap")
     });
+}
 
-    setTimeout(() => {
-      resolve();
-    }, 7000);
-  });
+function initMap() {
+  getUserLocation()
+    .then((location) => {
+      let city = localStorage.getItem("searchValue");
+      const currentCity = location.city;
+      let lang = localStorage.getItem("lang");
+
+      if (city !== null) {
+        return getMap(city, lang);
+      } else {
+        let lang = localStorage.getItem("lang");
+        return getMap(currentCity, lang);
+      }
+    })
+    .catch((err) => {
+      alert("Something went wrong - initMap");
+      console.log("err initMap")
+    });
 }
 
 function initWeather() {
@@ -255,8 +247,6 @@ function initWeather() {
       console.log("err initWeather")
     });
 }
-
-
 
 function changePosition() {
   let address = searchInput.value;
@@ -384,31 +374,31 @@ function dayWeek() {
 enLang.addEventListener("click", () => {
   enLang.classList.add("button_active");
   ruLang.classList.remove("button_active");
+  localStorage.setItem('lang', 'en');
   initUserData();
   initWeather();
-  localStorage.setItem('lang', 'en');
-  // map.setLayoutProperty('country-label', 'text-field', [
-  //   'get',
-  //   `name_en`,
-  // ]);
+  changeLanguageOfMap();
 
 });
 
 ruLang.addEventListener("click", () => {
   ruLang.classList.add("button_active");
   enLang.classList.remove("button_active");
+  localStorage.setItem('lang', 'ru');
   initUserData();
   initWeather();
-  localStorage.setItem('lang', 'ru');
-  // map.setLayoutProperty('country-label', 'text-field', [
-  //   'get',
-  //   `name_ru`,
-  // ]);
+  changeLanguageOfMap();
+
 });
 
 refreshButton.addEventListener("click", renderBackground);
 searchButton.addEventListener("click", initNewWeather);
 searchButton.addEventListener("click", initNewUserData);
+searchButton.addEventListener("click", function (event) {
+  let currentCity = searchInput.value;
+  localStorage.setItem("searchValue", currentCity);
+  renderBackground();
+});
 
 searchInput.addEventListener("keyup", function (event) {
   if (event.keyCode === 13) {
@@ -417,12 +407,31 @@ searchInput.addEventListener("keyup", function (event) {
   }
 });
 
-
-searchButton.addEventListener("click", function (event) {
-  let currentCity = searchInput.value;
-  localStorage.setItem("searchValue", currentCity);
-  renderBackground();
-});
+function changeLanguageOfMap() {
+  return new Promise((initMap) => {
+    initMap();
+    return true
+  })
+    .then(() => {
+      mapObject.getStyle().layers.map((each) => {
+        if (
+          each.hasOwnProperty('layout') &&
+          each.layout.hasOwnProperty('text-field')
+        ) {
+          if (!each.id.includes('road'))
+            mapObject.setLayoutProperty(each.id, 'text-field', [
+              'get',
+              `name_${localStorage.getItem('lang')}`,
+            ]);
+        }
+      });
+      return true
+    })
+    .catch((err) => {
+      alert("Something went wrong - changeLanguageOfMap");
+      console.log("err changeLanguageOfMap")
+    });
+}
 
 dayWeek();
 setInterval(dayWeek, 500);
@@ -431,5 +440,6 @@ setInterval(clockDate, 1000);
 clockDate();
 initUserData();
 initWeather();
-setInterval(changeLanguageOfMap, 500);
+initMap()
+
 
