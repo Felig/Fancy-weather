@@ -27,10 +27,20 @@ const positionLat = document.querySelector(".map_lat");
 const positionLng = document.querySelector(".map_lng");
 const backgroundContainer = document.querySelector(".weather");
 let now = new Date(),
-
   mapObject;
-localStorage.setItem('lang', 'en');
-localStorage.setItem('radioDegree', "metric");
+
+function setDefaultLocalStorageValues() {
+  if (localStorage.getItem('lang') == undefined) {
+    localStorage.setItem('lang', 'en');
+  } else if (localStorage.getItem('lang') == "ru") {
+    ruLang.classList.add("button_active");
+    enLang.classList.remove("button_active");
+  }
+
+  if (localStorage.getItem('radioDegree') == undefined) {
+    localStorage.setItem('radioDegree', "metric");
+  }
+}
 
 function renderBackground() {
   fetch(
@@ -40,7 +50,6 @@ function renderBackground() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
       let bgImage = data.urls.regular;
       localStorage.setItem('bg', bgImage);
       backgroundContainer.style.backgroundImage = `linear-gradient(
@@ -48,6 +57,10 @@ function renderBackground() {
                 rgba(8, 15, 26, 0.5) 0%,
                 rgba(6, 6, 8, 0.5)
               ), url(${data.urls.regular})`;
+    })
+    .catch((err) => {
+      alert("Something went wrong - renderBackground");
+      console.log("err renderBackground")
     });
 }
 
@@ -95,20 +108,6 @@ function getUserData(locationCity, lang) {
     .catch((err) => {
       alert("Something went wrong");
       console.log("err getUserData")
-    });
-}
-
-function initNewUserData() {
-  changePosition()
-    .then((location) => {
-      const newCity = location.results[0].components.city;
-      let lang = localStorage.getItem("lang");
-      return getUserData(newCity, lang);
-    })
-    .then((newUserData) => { })
-    .catch((err) => {
-      alert("Something went wrong");
-      console.log("err initNewUserData")
     });
 }
 
@@ -260,8 +259,25 @@ function changePosition() {
       return response.json();
     })
     .catch((err) => {
-      alert("Something went wrong");
+      alert("Something went wrong - changePosition");
       console.log("err changePosition")
+    });
+}
+
+function initNewUserData() {
+  changePosition()
+    .then((location) => {
+      //console.log(location);
+      const newCity = location.results[0].components.city;
+      let currentCity = searchInput.value;
+      localStorage.setItem("searchValue", currentCity);
+      let lang = localStorage.getItem("lang");
+      return getUserData(newCity, lang);
+    })
+
+    .catch((err) => {
+      alert("Ничего не найдено. Уточните запрос.");
+      console.log("err initNewUserData");
     });
 }
 
@@ -270,12 +286,17 @@ function initNewWeather() {
     .then((location) => {
       const currentCity = location.results[0].components.city;
       let lang = localStorage.getItem("lang");
-
-      return getWeather(currentCity, lang);
+      getWeather(currentCity, lang);
+      return (location)
+    })
+    .then((location) => {
+      const currentCity = location.results[0].components.city;
+      let lang = localStorage.getItem("lang");
+      return getMap(currentCity, lang);
     })
     .then((currentWhether) => { })
     .catch((err) => {
-      alert("Something went wrong");
+      //alert("Something went wrong - initNewWeather");
       console.log("err initNewWeather")
     });
 }
@@ -396,8 +417,6 @@ refreshButton.addEventListener("click", renderBackground);
 searchButton.addEventListener("click", initNewWeather);
 searchButton.addEventListener("click", initNewUserData);
 searchButton.addEventListener("click", function (event) {
-  let currentCity = searchInput.value;
-  localStorage.setItem("searchValue", currentCity);
   renderBackground();
 });
 
@@ -434,6 +453,7 @@ function changeLanguageOfMap() {
     });
 }
 
+setDefaultLocalStorageValues()
 dayWeek();
 setInterval(dayWeek, 500);
 setInterval(changeLanguage, 500);
