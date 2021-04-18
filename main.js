@@ -27,7 +27,8 @@ const positionLat = document.querySelector(".map_lat");
 const positionLng = document.querySelector(".map_lng");
 const backgroundContainer = document.querySelector(".weather");
 let now = new Date(),
-  mapObject;
+  mapObject,
+  timezone;
 
 function setDefaultLocalStorageValues() {
   if (localStorage.getItem('lang') == undefined) {
@@ -201,6 +202,8 @@ function getMap(locationCity, lang) {
         center: [mapLongitude, mapLatitude], // starting position [lng, lat]
         zoom: 9,
       });
+      timezone = data.city.timezone;
+      //console.log(timezone);
     })
     .catch((err) => {
       alert("Something went wrong - getMap");
@@ -274,7 +277,6 @@ function initNewUserData() {
       let lang = localStorage.getItem("lang");
       return getUserData(newCity, lang);
     })
-
     .catch((err) => {
       alert("Ничего не найдено. Уточните запрос.");
       console.log("err initNewUserData");
@@ -301,15 +303,63 @@ function initNewWeather() {
     });
 }
 
-function clockDate() {
+function initTime() {
+  getUserLocation()
+    .then((location) => {
+      let city = localStorage.getItem("searchValue");
+      const currentCity = location.city;
+      let lang = localStorage.getItem("lang");
 
+      if (city !== null) {
+        return getTimezone(city, lang);
+      } else {
+        let lang = localStorage.getItem("lang");
+        return getTimezone(currentCity, lang);
+      }
+    })
+    .catch((err) => {
+      alert("Something went wrong - initTime");
+      console.log("err initTime")
+    });
+}
+
+function getTimezone(locationCity, lang) {
+  const keyWeather = "faa22b98c4d6f4b1fd451599a62d942f";
+  let degree = localStorage.getItem("radioDegree");
+  fetch(
+    `https://api.openweathermap.org/data/2.5/forecast?q=${locationCity}&units=${degree}&lang=${lang}&appid=${keyWeather}`
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      //console.log(data);
+      timezone = data.city.timezone
+      //console.log(timezone);
+      return timezone;
+    })
+    .then(() => {
+      setInterval(clockDate, 1000);
+    })
+    .catch((err) => {
+      alert("Something went wrong - getTimezone");
+      console.log("err getTimezone")
+    });
+}
+
+
+function clockDate() {
   if (localStorage.getItem('lang') === 'ru') {
 
-    let now = new Date(),
+    let now = new Date();
+    //console.log(timezone);
+    let offsetMinuts = now.getTimezoneOffset();
+    now.setUTCHours(now.getUTCHours() + timezone / 3600 + offsetMinuts / 60);
+    let
       hours = now.getHours() < 10 ? "0" + now.getHours() : now.getHours(),
       minutes = now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes(),
       seconds = now.getSeconds() < 10 ? "0" + now.getSeconds() : now.getSeconds();
-
+    //console.log(now);
     let weekday = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
     let month = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль",
       "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
@@ -457,8 +507,9 @@ setDefaultLocalStorageValues()
 dayWeek();
 setInterval(dayWeek, 500);
 setInterval(changeLanguage, 500);
-setInterval(clockDate, 1000);
-clockDate();
+//setInterval(clockDate, 1000);
+//clockDate();
+initTime();
 initUserData();
 initWeather();
 initMap()
