@@ -26,19 +26,20 @@ const searchInput = document.querySelector(".input_search");
 const positionLat = document.querySelector(".map_lat");
 const positionLng = document.querySelector(".map_lng");
 const backgroundContainer = document.querySelector(".weather");
-let now = new Date(),
-  mapObject,
+let mapObject,
   timezone;
 
 function setDefaultLocalStorageValues() {
-  if (localStorage.getItem('lang') == undefined) {
+  if (localStorage.getItem('lang') === undefined) {
     localStorage.setItem('lang', 'en');
-  } else if (localStorage.getItem('lang') == "ru") {
-    ruLang.classList.add("button_active");
-    enLang.classList.remove("button_active");
   }
 
-  if (localStorage.getItem('radioDegree') == undefined) {
+  // else if (localStorage.getItem('lang') === "ru") {
+  //   ruLang.classList.add("button_active");
+  //   enLang.classList.remove("button_active");
+  // }
+
+  if (localStorage.getItem('radioDegree') === undefined) {
     localStorage.setItem('radioDegree', "metric");
   }
 }
@@ -89,7 +90,6 @@ function initUserData() {
         return getUserData(currentCity, lang);
       }
     })
-    .then((currentUserTime) => { })
     .catch((err) => {
       alert("Something went wrong");
       console.log("err initUserData")
@@ -203,7 +203,7 @@ function getMap(locationCity, lang) {
         zoom: 9,
       });
       timezone = data.city.timezone;
-      //console.log(timezone);
+      //console.log(timezone);       
     })
     .catch((err) => {
       alert("Something went wrong - getMap");
@@ -215,7 +215,7 @@ function initMap() {
   getUserLocation()
     .then((location) => {
       let city = localStorage.getItem("searchValue");
-      const currentCity = location.city;
+      let currentCity = location.city;
       let lang = localStorage.getItem("lang");
 
       if (city !== null) {
@@ -349,35 +349,27 @@ function getTimezone(locationCity, lang) {
 
 
 function clockDate() {
+  let weekday;
+  let month;
+  let now = new Date();
+  //console.log(timezone);
+  let offsetMinuts = now.getTimezoneOffset();
+  now.setUTCHours(now.getUTCHours() + timezone / 3600 + offsetMinuts / 60);
+  let
+    hours = now.getHours() < 10 ? "0" + now.getHours() : now.getHours(),
+    minutes = now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes(),
+    seconds = now.getSeconds() < 10 ? "0" + now.getSeconds() : now.getSeconds();
+  time.innerHTML = `${hours}:${minutes}:${seconds}`;
   if (localStorage.getItem('lang') === 'ru') {
-
-    let now = new Date();
-    //console.log(timezone);
-    let offsetMinuts = now.getTimezoneOffset();
-    now.setUTCHours(now.getUTCHours() + timezone / 3600 + offsetMinuts / 60);
-    let
-      hours = now.getHours() < 10 ? "0" + now.getHours() : now.getHours(),
-      minutes = now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes(),
-      seconds = now.getSeconds() < 10 ? "0" + now.getSeconds() : now.getSeconds();
-    //console.log(now);
-    let weekday = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
-    let month = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль",
+    weekday = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+    month = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль",
       "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-
-    time.innerHTML = `${hours}:${minutes}:${seconds}`;
-    date.textContent = `${weekday[now.getDay()]} ${now.getDate()} ${month[now.getMonth()]}`;
   } else {
-    let now = new Date(),
-      hours = now.getHours() < 10 ? "0" + now.getHours() : now.getHours(),
-      minutes = now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes(),
-      seconds = now.getSeconds() < 10 ? "0" + now.getSeconds() : now.getSeconds();
-    let weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    let month = ["January", "February", "March", "Aplil", "May", "June", "July",
+    weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    month = ["January", "February", "March", "Aplil", "May", "June", "July",
       "August", "Semtembre", "Octobre", "November", "December"];
-
-    time.innerHTML = `${hours}:${minutes}:${seconds}`;
-    date.textContent = `${weekday[now.getDay()]} ${now.getDate()} ${month[now.getMonth()]}`;
   }
+  date.textContent = `${weekday[now.getDay()]} ${now.getDate()} ${month[now.getMonth()]}`;
 }
 
 function changeLanguage() {
@@ -389,6 +381,8 @@ function changeLanguage() {
     document.querySelector('.feels_like').textContent = 'ОЩУЩАЕТСЯ:';
     document.querySelector('.wind').textContent = 'ВЕТЕР: ';
     document.querySelector('.humidity').textContent = 'ВЛАЖНОСТЬ: ';
+    ruLang.classList.add("button_active");
+    enLang.classList.remove("button_active");
   } else {
     searchButton.value = 'SEARCH';
     searchInput.placeholder = "Search city";
@@ -450,7 +444,6 @@ enLang.addEventListener("click", () => {
   initUserData();
   initWeather();
   changeLanguageOfMap();
-
 });
 
 ruLang.addEventListener("click", () => {
@@ -460,7 +453,6 @@ ruLang.addEventListener("click", () => {
   initUserData();
   initWeather();
   changeLanguageOfMap();
-
 });
 
 refreshButton.addEventListener("click", renderBackground);
@@ -478,29 +470,18 @@ searchInput.addEventListener("keyup", function (event) {
 });
 
 function changeLanguageOfMap() {
-  return new Promise((initMap) => {
-    initMap();
-    return true
-  })
-    .then(() => {
-      mapObject.getStyle().layers.map((each) => {
-        if (
-          each.hasOwnProperty('layout') &&
-          each.layout.hasOwnProperty('text-field')
-        ) {
-          if (!each.id.includes('road'))
-            mapObject.setLayoutProperty(each.id, 'text-field', [
-              'get',
-              `name_${localStorage.getItem('lang')}`,
-            ]);
-        }
-      });
-      return true
-    })
-    .catch((err) => {
-      alert("Something went wrong - changeLanguageOfMap");
-      console.log("err changeLanguageOfMap")
-    });
+  mapObject.getStyle().layers.map((each) => {
+    if (
+      each.hasOwnProperty('layout') &&
+      each.layout.hasOwnProperty('text-field')
+    ) {
+      if (!each.id.includes('road'))
+        mapObject.setLayoutProperty(each.id, 'text-field', [
+          'get',
+          `name_${localStorage.getItem('lang')}`,
+        ]);
+    }
+  });
 }
 
 setDefaultLocalStorageValues()
@@ -513,5 +494,3 @@ initTime();
 initUserData();
 initWeather();
 initMap()
-
-
